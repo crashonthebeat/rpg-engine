@@ -185,10 +185,8 @@ class Location(Entity):
         # roughly the same. 
 
         if self.visited: 
-            print("DEBUG: ROOM IS VISITED")
             self.quick_describe()
         else: 
-            print("DEBUG ROOM IS NOT VISITED")
             self.describe()
             self.visited = True
 
