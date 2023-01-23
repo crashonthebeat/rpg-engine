@@ -44,7 +44,7 @@ class Player(Container):
         
         # If player types 'look room' or 'look'
         if (obj == 'room' or obj == False):
-            self.current_room.detail_describe()
+            self.current_room.describe()
             return True
         else: 
             obj_id = self.current_room.find_object(obj)
