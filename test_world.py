@@ -60,7 +60,7 @@ player_room.container_inventory = [
 ]
 
 # ROOM DESCRIPTIONS (list of strings)
-player_room.detail_desc = [
+player_room.desc = [
     f"{pc.name.capitalize()}'s room is a spartan but cozy room. The ",
     "floor is made of unfinished pine covered with hide rugs. The ", 
     "exterior facing walls, are mostly masonry with an oak frame, while ",
@@ -69,17 +69,17 @@ player_room.detail_desc = [
     "sleep somewhat comfortably on."
 ]
 
-player_room.desc = [
+player_room.desc_quick = [
     "Your room is just the way you left it."
 ]
 
-endless_hallway.detail_desc = [
+endless_hallway.desc = [
     "This is a featureless hallway, there are no doors except for the one",
     "you just came through, and nothing hangs on the walls. You try to look",
     "at either end and just see darkness."
 ]
 
-endless_hallway.desc = [
+endless_hallway.desc_quick = [
     "The endless hallway continues to exert a horrifying presence."
 ]
 

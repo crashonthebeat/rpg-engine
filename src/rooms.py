@@ -12,29 +12,14 @@ class Room(Location, Container):
         Location.__init__(self, name)
         Container.__init__(self, name)
         self.desc = []
+        self.list_desc = "Lying on the floor" # Basic list_desc for all rooms
         self.entityType = "room"  # A roomspace will have type room.
         self.inventory = {}  # This is the 'root' inventory for the room.
         self.container_inventory = []  # This is the subcontainer inventory.
         self.exits = {}
 
-    def detail_describe(self):
-        super(Room, self).detail_describe()
-        if self.inventory:
-            super(Room, self).list_contents()
-        if self.container_inventory:
-            self.list_containers()
-        if self.exits:
-            self.list_exits()
-
-    def describe(self, detail=False):
-        if self.visited:
-            super(Container, self).describe()
-            if self.inventory:
-                super(Room, self).list_contents()
-            if self.container_inventory:
-                self.list_containers()
-            if self.exits:
-                self.list_exits()
-        else:
-            self.detail_describe()
-            self.visited = True
+    def describe(self):
+        # Since this location type is unique, looking at the room will
+        # also list its contents.
+        for line in self.desc: print(line)
+        self.list_contents()

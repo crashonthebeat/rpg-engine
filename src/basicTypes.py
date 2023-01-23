@@ -48,14 +48,21 @@ class Container(Entity):
         if len(self.inventory) == 1:
             for item in self.inventory.keys():
                 print(self.list_desc.capitalize() + " is " + item.name + ".")
+            self.list_containers()
         elif len(self.inventory) > 1:
             print(self.list_desc + ":")
             for item in self.inventory.keys():
                 print(item.name)
-        else: print(f"There is nothing {self.list_desc}.")
+            self.list_containers()
+        else: 
+            self.list_containers()
+            print(f"There is nothing {self.list_desc}.")
 
     def list_containers(self):
         # This method lists all containers in an inventory and their contents.
+
+        if len(self.container_inventory) == 0:
+            return True
 
         for holder in self.container_inventory:
             if holder.open == True: 
@@ -155,7 +162,7 @@ class Location(Entity):
     def __init__(self, name):
         Entity.__init__(self, name)
         self.entityType = "location"
-        self.detail_desc = []
+        self.desc_quick = []
         self.exits = {}
         self.visited = False
 
@@ -166,32 +173,24 @@ class Location(Entity):
         for dir, exit in zip(self.exits.keys(), self.exits.values()):
             print(f"{ex(dir)}: {exit.name.capitalize()}")
 
-    def detail_describe(self):
-        # This method will print the full description of the location, if
-        # this is the player's first time visiting or they want a full
-        # description of the room. 
-        # TODO Make this the describe method, and subsequent visits are
-        #      quick describe.
-
-        for line in self.detail_desc:
-            print(line)
-
-    def describe(self):
-        # This method will print a simple description of the room. It will
-        # change depending on if the location type is a roomspace or an
-        # overworld space.
-
-        if self.visited:
-            super(Location, self).describe()
-        else:
-            self.detail_describe()
-            self.visited = True
-        if self.exits:
-            self.list_exits()
+    def quick_describe(self):
+        # This method will print a quick description of a location if the
+        # user has already visited the location before and nothing has
+        # changed. 
+        for line in self.desc_quick: print(line)
 
     def enter(self):
         # This method is used to print all the relevant stats of a room
         # when it is entered. This, as well as the main method will be
         # roughly the same. 
 
-        self.describe()
+        if self.visited: 
+            print("DEBUG: ROOM IS VISITED")
+            self.quick_describe()
+        else: 
+            print("DEBUG ROOM IS NOT VISITED")
+            self.describe()
+            self.visited = True
+
+        
+        self.list_exits()
