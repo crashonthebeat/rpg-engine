@@ -16,6 +16,8 @@ These are features that I plan to add for the next couple of versions.
 
 * Cleaning up existing code.
 * Documenting features I've added but haven't commented (this will never go away)
+* Finding a way to list containers in the general inventory.
+    * I think by setting the entity type this can be done.
 * Item slots, weight, and container capacity
 * Game Menu with Inventory, Status, Map (really not sure how to do this)
 * Interactive roomspace items like switches, buttons, etc.
