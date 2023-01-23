@@ -60,35 +60,46 @@ class Player(Container):
         else: 
             print(f"You can't find {obj}.")
 
-    def get_item(self, obj, ind_obj):
+
+    def get_item(self, item, box):
         # This method will search for an item in the roomspace container and
         # all child containers, or from just a specific container if that 
         # container is given as the indirect object.
-        #
-        # TODO Cleanup this and all item methods.
 
-        if ind_obj:
-            ind_obj_id, holder = self.current_room.find_item(ind_obj)
-            if ind_obj_id == 'multiple':
-                print(f"Which {ind_obj} do you want to take from?")
-            elif ind_obj_id == False:
-                print(f"You can't find a {ind_obj} here.")
-            else: 
-                obj_id, holder = ind_obj_id.find_item(obj)
-        else:
-            obj_id, holder = self.current_room.find_item(obj)
+        # If the user gives a specific container, search for that first.
+        if box: 
+            box_id = self.current_room.find_box(box)
+            if box_id == False:  # If the user box isn't found, stop function.
+                print(f"You don't see the {box} here.")
+                return True
+            elif box_id == 'multiple':  # If search returned multiple boxes.
+                print(f"Which {box} do you mean?")
+                # The user will need to be more specific.
+                return True
+            elif box_id == 'closed':
+                print(f"You need to open that first!")
+                return True
+        else: box_id = self.current_room  # If no container is given.
 
-        if obj_id == 'multiple':
-            print(f"Which {obj} do you want to take?")
-        elif obj_id and holder:
-            holder.remove_item(obj_id)
-            self.add_item(obj_id)
-            print(f"You get {obj_id.name} from {holder.name.lower()}.")
-        elif obj_id and holder == False:
-            self.add_item(obj_id)
-            print(f"You get {obj_id.name}")
-        else:
-            print(f"You can't find a {obj} here.")
+        # Finally, search for the item in the given box or in the room.
+        item_id, parent_id = box_id.find_item(item)
+
+        if item_id == False:  # If the item isn't found, stop function.
+            print(f"You don't see the {item} here.")
+            return True
+        elif item_id == 'multiple':  # If there are multiple matches.
+            print(f"Which {item} do you mean?")
+            return True
+        elif item_id and parent_id:  # If item was found in a sub-container.
+            box_id = parent_id
+        else: 
+            box_id = self.current_room
+
+        # If the item was found (and box if given), then add and remove the items.
+        box_id.remove_item(item_id)
+        self.add_item(item_id)
+        print(f"You get {item_id.name} from {box_id.name}!")
+
 
     def drop_item(self, obj):
         # This method will find an item in the player's inventory and "drops" 
@@ -105,25 +116,28 @@ class Player(Container):
         else:
             print(f"You don't have {obj}")
 
-    def place_item(self, obj, ind_obj):
+    def place_item(self, item, box):
         # This method takes an item from the player's inventory and places it
         # into a given container.
 
-        print("DEBUG SEARCHING FOR " + ind_obj)
-        box_id = self.current_room.find_box(ind_obj)
+        # First try to find the box, as in the methods above.
+        box_id = self.current_room.find_box(box)
         if box_id == 'multiple':
-            print(f"Which {ind_obj} do you want to take from?")
+            print(f"Which {box} do you want to take from?")
         elif box_id == False:
-            print(f"You can't find a {ind_obj} here.")
+            print(f"You can't find a {box} here.")
+            return True
+        elif box_id == 'closed':
+            print(f"You need to open {box_id.name} first!")
             return True
 
-        obj_id, holder = self.find_item(obj)
+        item_id, parent_id = self.find_item(item)
 
-        if obj_id == 'multiple':
-            print(f"Which {obj} do you want to drop?")
-        elif obj_id:
-            self.remove_item(obj_id)
-            box_id.add_item(obj_id)
-            print(f"You place {obj_id.name} on {box_id.name.lower()}.")
+        if item_id == 'multiple':
+            print(f"Which {item} do you want to drop?")
+        elif item_id:
+            self.remove_item(item_id)
+            box_id.add_item(item_id)
+            print(f"You place {item_id.name} on {box_id.name.lower()}.")
         else:
-            print(f"You don't have {obj}")
+            print(f"You don't have {item}")

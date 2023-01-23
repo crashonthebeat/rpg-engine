@@ -70,48 +70,62 @@ class Container(Entity):
         super(Container, self).describe()
         self.list_contents()
 
-    def find_item(self, obj):
+    def find_item(self, item):
         # This method is called when a user wants to interact with an item
         # in a container. It loops over all items in its own inventory and
         # the inventories of child containers. If the item is found in a
         # child inventory, then it returns what container it was found in.
 
-        obj_id = False
-        found_container = False
+        item_id = False
+        parent_id = False
         found = 0
 
-        for item in self.inventory.keys():
-            if obj in item.name.lower():
+        # First search for the item in the root inventory
+        for key in self.inventory.keys():
+            if item in key.name.lower():
+                # If if the item is found, keep searching in case
+                # there are multiple matches.
                 found += 1
-                obj_id =  item
-            if obj in item.name and found > 1:
-                obj_id = 'multiple'
+                item_id =  key
+            if item in key.name.lower() and found > 1:
+                item_id = 'multiple'
+                return item_id, parent_id
+                # If multiple matches, return instead of searching more.
+
+        # If the item wasn't found in the root inventory, search child boxes
         if self.container_inventory and found == 0:
             for box in self.container_inventory:
-                if box.open: 
-                    obj_id, holder = box.find_item(obj)
-                    if obj_id: 
+                if box.open:  # Check if box is open, if not move on.
+                    item_id, parent_id = box.find_item(item)
+                    if item_id: 
+                        # If if the item is found, keep searching in case
+                        # there are multiple matches.
                         found += 1
-                        found_container = box
-                    if obj_id and found > 1: 
-                        obj_id = 'multiple'
+                        parent_id = box
+                    if item_id and found > 1: 
+                        item_id = 'multiple'
+                        return item_id, parent_id
+                        # If multiple matches, return instead of searching more.
 
-        return obj_id, found_container
+        return item_id, parent_id
     
+
     def find_box(self, box):
         # This method is like find_item, but for child containers.
 
         box_id = False
         found = 0
 
-        for item in self.container_inventory:
-            if box in item.name.lower():
+        for key in self.container_inventory:
+            if box in key.name.lower():
                 found += 1
-                box_id =  item
-            if box in item.name and found > 1:
+                box_id =  key
+            if box in key.name and found > 1:
                 box_id = 'multiple'
+            
+        if not box_id.open: return 'closed'  # Returns if listed box is closed.
+        else: return box_id
 
-        return box_id
     
     def remove_item(self, obj):
         # This method checks if removing the item will reduce its quantity to 
