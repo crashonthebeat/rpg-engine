@@ -29,6 +29,7 @@ def validate_action(action, obj, ind_obj, prep):
     return True
 
 def command_loop(game=True):
+    pc.current_room.enter()
     while game:
         print("What would you like to do?")
         user_input = input("> ")
@@ -38,5 +39,4 @@ def command_loop(game=True):
 
 
 if __name__ == "__main__":
-    pc.current_room.enter()
     command_loop()
