@@ -4,7 +4,11 @@ from time import sleep
 from src.basicTypes import Container
 
 def clear_screen():
-    sleep(1)
+    # This method will clear the screen to clean it up.
+
+    return True  # Disabling this method while in production.
+    
+    sleep(0.5)
 
     if os.name == 'posix':
         os.system('clear')
@@ -12,11 +16,16 @@ def clear_screen():
         os.system('cls')
 
 class Player(Container):
+    # The player has an inventory, so it is a container. 
+
     def __init__(self, name):
         Container.__init__(self, name)
         self.desc = [f"Nothing can be said about {self.name}."]
 
     def travel(self, action, direction):
+        # This is the travel method used to move the player between
+        # roomspaces, as well as sub-spaces and overworld.
+
         if direction in self.current_room.exits.keys():
             print(f"You {action} {direction}.")
             new_room = self.current_room.exits[direction]
@@ -28,6 +37,8 @@ class Player(Container):
             print(f"You cannot go {direction}.")
 
     def look(self, obj, ind_obj):
+        # This calls the describe method for an entity if the entity exists.
+
         # If player types 'look at object': 
         if ind_obj: obj = ind_obj
         
@@ -50,6 +61,12 @@ class Player(Container):
             print(f"You can't find {obj}.")
 
     def get_item(self, obj, ind_obj):
+        # This method will search for an item in the roomspace container and
+        # all child containers, or from just a specific container if that 
+        # container is given as the indirect object.
+        #
+        # TODO Cleanup this and all item methods.
+
         if ind_obj:
             ind_obj_id, holder = self.current_room.find_item(ind_obj)
             if ind_obj_id == 'multiple':
@@ -74,6 +91,9 @@ class Player(Container):
             print(f"You can't find a {obj} here.")
 
     def drop_item(self, obj):
+        # This method will find an item in the player's inventory and "drops" 
+        # it into the room's inventory.
+
         obj_id, holder = self.find_item(obj)
 
         if obj_id == 'multiple':
@@ -86,6 +106,9 @@ class Player(Container):
             print(f"You don't have {obj}")
 
     def place_item(self, obj, ind_obj):
+        # This method takes an item from the player's inventory and places it
+        # into a given container.
+
         print("DEBUG SEARCHING FOR " + ind_obj)
         box_id = self.current_room.find_box(ind_obj)
         if box_id == 'multiple':

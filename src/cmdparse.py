@@ -19,6 +19,10 @@ directions = ["north", "n", "east", "e", "south", "s", "west", "w",
               "southwest", "sw", "northwest", "nw"]
 
 def remove_fillers(user_input):
+    # This method takes away all of the articles and pronouns from a user
+    # input in order leave just the important parts of speech. It simply
+    # loops over every word in the user_input list and pops out the fillers.
+
     i = 0
     while i < len(user_input):
         if user_input[i] in fillers:
@@ -30,6 +34,12 @@ def remove_fillers(user_input):
     return user_input
 
 def get_objects(user_input):
+    # This method depends on the preposition, which will separate the 
+    # direct object from the indirect object. It pops out that word and
+    # stores it (if it's needed for future additions) and then marks
+    # its index as the start of the indirect object. Then it returns 
+    # the two strings and the preposition.
+
     prep = False
     ind_obj = False
 
@@ -48,19 +58,23 @@ def get_objects(user_input):
     return obj, ind_obj, prep
 
 def parse(user_input):
-    # This is the primary function of this file, and will return all
-    # grammatical objects. 
+    # This method takes a string, splits it into a list, and then passes
+    # it through the above methods to get all the parts of speech into
+    # their own separate strings.
 
-    user_input = user_input.lower().split(" ") # Split user_input into a list
-    user_input = remove_fillers(user_input) # Remove filler words
+    user_input = user_input.lower().split(" ")  # Split user_input into a list
+    user_input = remove_fillers(user_input)  # Remove filler words
 
-    action = user_input.pop(0) # Get action from user_input
+    action = user_input.pop(0)  # Get action from user_input
 
-    if action in directions: # Allows a user to input just a direction.
+    if action in directions:  # Allows a user to input just a direction.
         return "go", action, False, False
 
+    # If the verb is removed and nothing is left in the user input, that
+    # means the user just entered an action verb, so that should be 
+    # returned rather than passing it through the next method.
     if len(user_input) == 0: return action, False, False, False
 
-    obj, ind_obj, prep = get_objects(user_input)
+    obj, ind_obj, prep = get_objects(user_input)  # Get objects, see above
 
     return action, obj, ind_obj, prep
