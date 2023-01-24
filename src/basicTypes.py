@@ -30,13 +30,14 @@ class Container(Entity):
     # of a roomspace (like a shelf). Every container will have a unique id.
     # ID of an item is just the object variable name.
 
-    def __init__(self, name):
+    def __init__(self, name, list_desc, open, can_close):
         Entity.__init__(self, name)
         self.entityType = "box"  # This is the common term for a container.
-        self.list_desc = ""  # A string that prints before the listed items.
+        self.list_desc = list_desc  # A string that prints before the listed items.
         self.inventory = {}  # A key pair value of item id and quantity.
         self.container_inventory = []  # A list of containers held within.
-        self.open = False  # If the contents will be listed with the parent
+        self.open = open  # If the contents will be listed with the parent
+        self.can_close = can_close  # If the container can close. 
         self.slots = False  # Size capacity of the container.
 
     def list_contents(self):
@@ -50,7 +51,7 @@ class Container(Entity):
                 print(self.list_desc.capitalize() + " is " + item.name + ".")
             self.list_containers()
         elif len(self.inventory) > 1:
-            print(self.list_desc + ":")
+            print(self.list_desc.capitalize() + ":")
             for item in self.inventory.keys():
                 print(item.name)
             self.list_containers()
@@ -84,7 +85,7 @@ class Container(Entity):
         # child inventory, then it returns what container it was found in.
 
         item_id = False
-        parent_id = False
+        parent_id = self
         found = 0
 
         # First search for the item in the root inventory
@@ -93,7 +94,8 @@ class Container(Entity):
                 # If if the item is found, keep searching in case
                 # there are multiple matches.
                 found += 1
-                item_id =  key
+                item_id = key
+                parent_id = self
             if item in key.name.lower() and found > 1:
                 item_id = 'multiple'
                 return item_id, parent_id
@@ -108,11 +110,13 @@ class Container(Entity):
                         # If if the item is found, keep searching in case
                         # there are multiple matches.
                         found += 1
-                        parent_id = box
+                        found_item_id = item_id
+                        found_parent_id = box
                     if item_id and found > 1: 
                         item_id = 'multiple'
                         return item_id, parent_id
                         # If multiple matches, return instead of searching more.
+            if found_item_id: return found_item_id, found_parent_id
 
         return item_id, parent_id
     
@@ -123,15 +127,14 @@ class Container(Entity):
         box_id = False
         found = 0
 
-        for key in self.container_inventory:
-            if box in key.name.lower():
+        for container in self.container_inventory:
+            if box in container.name.lower():
                 found += 1
-                box_id =  key
-            if box in key.name and found > 1:
+                box_id = container
+            if box in container.name and found > 1:
                 box_id = 'multiple'
-            
-        if not box_id.open: return 'closed'  # Returns if listed box is closed.
-        else: return box_id
+
+        return box_id
 
     
     def remove_item(self, obj):
@@ -152,6 +155,22 @@ class Container(Entity):
             self.inventory[obj] += 1
         else: 
             self.inventory[obj] = 1
+
+    def open_self(self):
+        if self.open:
+            print(f"{self.name.capitalize()} is already open.")
+        else:
+            self.open = True
+            print(f"You open {self.name}")
+
+    def close_self(self):
+        if self.open == False:
+            print(f"{self.name.capitalize()} is already closed.")
+        elif self.can_close:
+            print(f"You close {self.name}.")
+            self.open = False
+        else:
+            print(f"You can't close {self.name}!")
 
 
 class Location(Entity):
@@ -192,3 +211,24 @@ class Location(Entity):
 
         
         self.list_exits()
+
+class Person(Entity):
+    # This is the super class for all living non-beast entities. Objects of
+    # this class can wear armor and wield items. 
+
+    def __init__(self, name):
+        Entity.__init__(self, name)
+        self.entityType = "person"
+        self.hand_slots = 2  # All races will have 2 hands.
+        # The following attributes are for wearables.
+        # See wearables for explanation of slot amounts.
+        self.primary_slot = False
+        self.wearable_slots = {
+            'head': 3, 'face': 1, 'eyes': 1, 'neck': 2, 'back': 2, 
+            'l_should': 2.5, 'l_arm': 2.5, 'l_wrist': 1.5, 'l_hand': 1.5,
+            'r_should': 2.5, 'r_arm': 2.5, 'r_wrist': 1.5, 'r_hand': 1.5,
+            'chest': 2.5, 'waist': 2.5, 'hips': 2.5, 'fingers': 8,
+            'l_thigh': 1.5, 'l_shin': 1.5, 'l_foot': 1.5,
+            'r_thigh': 1.5, 'r_shin': 1.5, 'r_foot': 1.5
+        }
+        self.items_worn = []

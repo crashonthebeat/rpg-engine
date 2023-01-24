@@ -54,7 +54,7 @@ player_room_rack.inventory = {
 }
 
 player_room_chest.inventory = {
-    leather_armor :1
+    leather_armor: 1
 }
 
 player_room.container_inventory = [

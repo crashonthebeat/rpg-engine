@@ -14,7 +14,6 @@ Just a basic walking and item grabbing simulator.
 
 These are features that I plan to add for the next couple of versions. 
 
-* Cleaning up existing code.
 * Documenting features I've added but haven't commented (this will never go away)
 * Finding a way to list containers in the general inventory.
     * I think by setting the entity type this can be done.

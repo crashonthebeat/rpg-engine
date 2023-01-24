@@ -10,13 +10,14 @@ class Room(Location, Container):
 
     def __init__(self, name):
         Location.__init__(self, name)
-        Container.__init__(self, name)
         self.desc = []
-        self.list_desc = "Lying on the floor" # Basic list_desc for all rooms
+        self.list_desc = "lying on the ground" # Basic list_desc for all rooms
         self.entityType = "room"  # A roomspace will have type room.
         self.inventory = {}  # This is the 'root' inventory for the room.
         self.container_inventory = []  # This is the subcontainer inventory.
         self.exits = {}
+        self.open = True
+        self.can_close = False
 
     def describe(self):
         # Since this location type is unique, looking at the room will
