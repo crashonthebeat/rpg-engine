@@ -1,4 +1,4 @@
-# RPG-ENGINE alpha 0.1
+# RPG-ENGINE alpha 0.2
 
 This is a text-adventure rpg engine written from scratch entirely in python. I don't know what level of python I am but it's surely not expert, so I am open to advice or comments. Additionally, I'm still new to git so everything is going to be a little weird until I learn the best practices.
 
@@ -8,7 +8,9 @@ See "The Backend" for some technical descriptions.
 
 ## Current Features
 
-Just a basic walking and item grabbing simulator.
+* Walk between rooms! 
+* Pick up and put down items!
+* Wear certain items!
 
 ## Planned Features
 
