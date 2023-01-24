@@ -68,9 +68,9 @@ class Player(Person, Container):
             self.current_room.describe()
             return True
         else: 
-            obj_id = self.current_room.find_object(obj)
+            obj_id, parend_id = self.current_room.find_item(obj)
             if obj_id == False:
-                obj_id = self.current_room.find_box(obj)
+                obj_id, parent_id = self.current_room.find_box(obj)
 
         if obj_id == 'multiple': 
             print(f"Which {obj} do you want to look at?")
