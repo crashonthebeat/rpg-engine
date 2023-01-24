@@ -10,6 +10,7 @@ take_actions = ['take', 'get', 'grab', 'retrieve', 'nab']
 drop_actions = ['drop', 'yeet', 'toss']
 place_actions = ['place', 'put', 'set', 'mount']
 wear_actions = ['wear', 'don']
+unwear_actions = ['remove', 'strip']
 
 def validate_action(action, obj, ind_obj, prep):
     # Travel Action (Moving between roomspaces): 
@@ -26,7 +27,9 @@ def validate_action(action, obj, ind_obj, prep):
     elif action == 'open': pc.open_box(obj)
     elif action == 'close': pc.close_box(obj)
     # Wear Actions:
-    elif action in wear_actions : pc.wear_item(obj)
+    elif action in wear_actions: pc.wear_item(obj)
+    # Unwear Actions (What's a good word?):
+    elif action in unwear_actions: pc.unwear_item(obj)
     # Exit to Menu: 
     elif action == "exit": return False
     # Default: 
