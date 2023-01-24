@@ -42,6 +42,21 @@ leather_torso = Tunic(
     ],
 )
 
+cotton_breeches = Trousers(
+    f"a pair of {intr('cotton breeches')}",
+    ["A sturdy and comfortable pair of brown breeches."]
+)
+
+leather_boots = Boots(
+    f"a pair of {intr('leather boots')}",
+    ["A strong and well worn pair of boots."]
+)
+
+cork_sandals = Shoes(
+    f"A pair of {intr('cork sandals')}",
+    ["You still don't know why you bought these."]
+)
+
 # CONTAINER INITIALIZATION
 
 start_cabin_rack = Container(
@@ -58,7 +73,9 @@ start_cabin_chest = Container(
     False, True)
 
 start_cabin_chest.inventory = {
-    leather_torso: 1
+    leather_torso: 1,
+    cotton_breeches: 1,
+    leather_boots: 1
 }
 
 # ROOM INITIALIZATION
@@ -75,6 +92,10 @@ riverbank_2 = Room("Riverbank")
 forest_path_1 = Room("A path through the forest")
 forest_path_2 = Room("A path through the forest")
 forest_path_3 = Room("A path through the forest")
+
+start_cabin.inventory = {
+    cork_sandals: 1
+}
 
 start_cabin.container_inventory = [
     start_cabin_chest, start_cabin_rack
