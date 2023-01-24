@@ -21,17 +21,21 @@ class Player(Person, Container):
     def __init__(self, name):
         Person.__init__(self, name)
         self.desc = [f"Nothing can be said about {self.name}."]
+        self.list_desc = 'in your hands'
         self.inventory = {}
         self.container_inventory = []
         self.items_worn = []
         self.can_close = False
         self.open = True
 
-    def desc(self):
-        super(Person, self).desc()
+    def describe(self):
+        super(Person, self).describe()
         print("You are currently wearing:")
-        for article in self.items_worn:
-            print(f"{article.name.capitalize} on your {article.primary_slot}.")
+        if len(self.items_worn) > 0:
+            for article in self.items_worn:
+                print(f"{article.name.capitalize()} on your {article.primary_slot}.")
+        else:
+            print("Nothing.")
 
     def travel(self, action, direction):
         # This is the travel method used to move the player between
@@ -67,6 +71,9 @@ class Player(Person, Container):
         if (obj == 'room' or obj == False):
             self.current_room.describe()
             return True
+        elif obj == 'self':
+            self.describe()
+            return True
         else: 
             obj_id, parend_id = self.current_room.find_item(obj)
             if obj_id == False:
@@ -74,8 +81,6 @@ class Player(Person, Container):
 
         if obj_id == 'multiple': 
             print(f"Which {obj} do you want to look at?")
-        elif obj_id == 'self':
-            self.describe()
         elif obj_id: 
             obj_id.describe()
         else: 
