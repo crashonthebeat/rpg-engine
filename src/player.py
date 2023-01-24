@@ -23,8 +23,15 @@ class Player(Person, Container):
         self.desc = [f"Nothing can be said about {self.name}."]
         self.inventory = {}
         self.container_inventory = []
+        self.items_worn = []
         self.can_close = False
         self.open = True
+
+    def desc(self):
+        super(Person, self).desc()
+        print("You are currently wearing:")
+        for article in self.items_worn:
+            print(f"{article.name.capitalize} on your {article.primary_slot}.")
 
     def travel(self, action, direction):
         # This is the travel method used to move the player between
@@ -164,7 +171,7 @@ class Player(Person, Container):
         # into a given container.
 
         # First try to find the box, as in the methods above.
-        box_id = self.search_for_box(box)
+        box_id = self.search_for_box(box, self.current_room)
         if not box_id: return True
         elif box_id.open == False: 
             print(f"You need to open {box_id.name} first.")
@@ -211,3 +218,21 @@ class Player(Person, Container):
             
             print(f"You put on {item_id.name}")
             self.items_worn.append(item_id)
+            self.remove_item(item_id)
+
+    def unwear_item(self, item):
+        item_id = False  # This might come back to bite me later.
+
+        for article in self.items_worn:
+            if item in article.name:
+                item_id = article
+
+        if item_id == False: return True
+        else: pass
+        
+        for slot in item_id.used_slots.keys():
+            self.wearable_slots[slot] += item_id.used_slots[slot]
+
+        print(f"You remove {item_id.name}.")
+        self.items_worn.remove(item_id)
+        self.add_item(item_id)
