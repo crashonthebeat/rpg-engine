@@ -1,4 +1,5 @@
 from termcolor import colored  # Use terminal colors.
+from tabulate import tabulate
 
 def ex(exit):
     # This allows the location class to color the directions
@@ -39,6 +40,7 @@ class Container(Entity):
         self.open = open  # If the contents will be listed with the parent
         self.can_close = can_close  # If the container can close. 
         self.slots = False  # Size capacity of the container.
+        self.is_container = True
 
     def list_contents(self):
         # This method loops through and lists all items contained within itself.
@@ -65,69 +67,61 @@ class Container(Entity):
         if len(self.container_inventory) == 0:
             return True
 
-        for holder in self.container_inventory:
-            if holder.open == True: 
-                holder.list_contents()
+        for box in self.container_inventory:
+            if box.open == True: 
+                box.list_contents()
             else: 
-                print(holder.name.capitalize() + " is here.")
+                print(box.name.capitalize() + " is here.")
 
     def describe(self):
         # This takes the entity describe method and adds the call to search
         # contents if the container is open.
 
         super(Container, self).describe()
-        self.list_contents()
+        if self.open: self.list_contents()
+        elif self.entityType == 'wearable': self.list_contents()
+        # List contents if wearable, since you're not gonna lock a backpack.
 
-    def find_item(self, item):
-        # This method is called when a user wants to interact with an item
-        # in a container. It loops over all items in its own inventory and
-        # the inventories of child containers. If the item is found in a
-        # child inventory, then it returns what container it was found in.
+    def find_item(self, search_item):
+        # This method creates an array of all open containers in the search
+        # space (incl the root container), and iterates through all lists
+        # in order to find the item.
 
-        item_id = False
-        parent_id = self
-        found = 0
+        found = 0  # Item not found yet
+        item_id = False  # Returns if item can't be found
+        parent_id = False  # Same as above
+        
+        all_boxes = [self]  # Create list of all containers, start with self
+        for box in self.container_inventory:
+            if box.open: all_boxes.append(box)
+            # Of all containers in this container, add any open containers.
 
-        # First search for the item in the root inventory
-        for key in self.inventory.keys():
-            if item in key.name.lower():
-                # If if the item is found, keep searching in case
-                # there are multiple matches.
-                found += 1
-                item_id = key
-                parent_id = self
-            if item in key.name.lower() and found > 1:
-                item_id = 'multiple'
-                return item_id, parent_id
-                # If multiple matches, return instead of searching more.
+        for box in all_boxes: 
+            for item in box.inventory.keys():
+                if search_item in item.name.lower():
+                    # If the item is found, increase found count, but keep
+                    # searching in case there are more.
+                    found += 1
+                    item_id = item
+                    parent_id = box
+                if search_item in item.name.lower() and found > 1:
+                    # If the method finds multiple, user needs to specify.
+                    return 'multiple', parent_id  # Stop searching
+        
+        return item_id, parent_id    
 
-        # If the item wasn't found in the root inventory, search child boxes
-        if self.container_inventory and found == 0:
-            for box in self.container_inventory:
-                if box.open:  # Check if box is open, if not move on.
-                    item_id, parent_id = box.find_item(item)
-                    if item_id: 
-                        # If if the item is found, keep searching in case
-                        # there are multiple matches.
-                        found += 1
-                        found_item_id = item_id
-                        found_parent_id = box
-                    if item_id and found > 1: 
-                        item_id = 'multiple'
-                        return item_id, parent_id
-                        # If multiple matches, return instead of searching more.
-            if found_item_id: return found_item_id, found_parent_id
-
-        return item_id, parent_id
-    
-
-    def find_box(self, box):
+    def find_box(self, box, pc_boxes):
         # This method is like find_item, but for child containers.
+
+        search_area= []  # Create blank search area
+        search_area.extend(self.container_inventory)  # Append room containers
+        search_area.extend(pc_boxes)  # Append all the PC's containers
+
 
         box_id = False
         found = 0
 
-        for container in self.container_inventory:
+        for container in search_area:
             if box in container.name.lower():
                 found += 1
                 box_id = container
@@ -214,15 +208,16 @@ class Location(Entity):
 
 class Person(Entity):
     # This is the super class for all living non-beast entities. Objects of
-    # this class can wear armor and wield items. 
+    # this class can wear armor and wield items. This will also be where all
+    # methods that aren't player actions go.
 
     def __init__(self, name):
         Entity.__init__(self, name)
         self.entityType = "person"
-        self.hand_slots = 2  # All races will have 2 hands.
+        self.free_hands = 2  # All races will have 2 hands.
         # The following attributes are for wearables.
         # See wearables for explanation of slot amounts.
-        self.primary_slot = False
+        self.items_held = []
         self.wearable_slots = {
             'head': 3, 'face': 1, 'eyes': 1, 'neck': 2, 'back': 2, 
             'l_should': 2.5, 'l_arm': 2.5, 'l_wrist': 1.5, 'l_hand': 1.5,
@@ -232,3 +227,16 @@ class Person(Entity):
             'r_thigh': 1.5, 'r_shin': 1.5, 'r_foot': 1.5
         }
         self.items_worn = []
+
+    def make_table(self, cols):
+        # This method will take a series of columns and format it into
+        # a table to be printed to the console.
+
+        # This function appends spaces to the end of each list so that
+        # each list will have an equal number of rows.
+        maxlen = 0
+        for col in cols: maxlen = max(maxlen, len(col))
+        for col in cols: col +=[' '] * (maxlen - len(col))
+        table = list(zip(*cols))
+        return tabulate(table, maxcolwidths=(80 / len(cols)))
+        
