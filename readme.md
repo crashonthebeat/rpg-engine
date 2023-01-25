@@ -1,4 +1,4 @@
-# RPG-ENGINE alpha 0.2
+# RPG-ENGINE alpha 0.3
 
 This is a text-adventure rpg engine written from scratch entirely in python. I don't know what level of python I am but it's surely not expert, so I am open to advice or comments. Additionally, I'm still new to git so everything is going to be a little weird until I learn the best practices.
 
@@ -10,20 +10,26 @@ See "The Backend" for some technical descriptions.
 
 * Walk between rooms! 
 * Pick up and put down items!
-* Wear certain items!
+* Equippable items!
+* Look at yourself!
+* Backpacks! You can put things in them, take things out, and look inside them.
 
 ## Planned Features
 
-These are features that I plan to add for the next couple of versions. 
+These are features that will be in the game engine as of version 1. 
 
 * Documenting features I've added but haven't commented (this will never go away)
-* Finding a way to list containers in the general inventory.
-    * I think by setting the entity type this can be done.
+* Refactor the item find methods for better efficiency and reusability
+
 * Item slots, weight, and container capacity
 * Game Menu with Inventory, Status, Map (really not sure how to do this)
 * Interactive roomspace items like switches, buttons, etc.
 * Closed, Locked, and Hidden directions, items, and containers
 * Searching and Pondering (pondering for hints)
+* Basic dialogue and fetch-quests
+* Puzzles
+
+I may also end up doing a code rewrite before version 1.
 
 ## Future Features
 
@@ -50,15 +56,9 @@ Think of these features as major-version releases.
 * Keywords that appear will also be added to your journal, and you can ask other NPCs about keywords you know.
     * If the NPC doesn't know about the keyword, then there will be a default option.
 
-### Character Creation
-
-* Everything can be customized (it's your imagination)
-* Classless (but templates will be available) and level-less (skill-based advancement, rip star wars galaxies)
-* Some non-standard attribute system.
-    * And an interactive way of setting these that explain what the attributes are and what they do.
-
 ### Combat
 
+* Armor and Weapons
 * Either automatic with *options* or turn-based (easiest) \
   I've never really liked turn based combat though, always feels a little gamey and unrealistic.
 * Crunchy Combat Stats (because I'm *like that*)
@@ -66,6 +66,17 @@ Think of these features as major-version releases.
     * Vitality will decrease at its own rate, and can reduce your defense if too low.
     * Rate of decrease will depend on opponent and pc skill
 
+### Character Creation
+
+* Everything can be customized (it's your imagination)
+* Classless (but templates will be available) and level-less (skill-based advancement, rip star wars galaxies)
+* Some non-standard attribute system.
+    * And an interactive way of setting these that explain what the attributes are and what they do.
+
 ## The Backend
 
 Like I said above, this is all written in python. I'm using multiple inheritance to cut down on code repetition and to standardize methods. This is why both a player and a room are a container. They both have inventories. In some cases, that isn't really possible and I'll have to modify methods and stats. 
+
+If you dig into the player methods, you'll see that I have several methods to "find" an item. This is because the player inputs a string, while the actual "item id" is an object. So, the program has to loop through the name attributes of every item in an inventory and look for a match, which will then return the object that matches.
+
+I also have a lot of "return True" on these methods in order to keep them from passing an invalid variable to another if statement or loop in the same method. Since I'm using this also to get better at python and programming in general, these will be cleaned up in the future, unless that's just *how it's done* in which case the spaghetti stays.
