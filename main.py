@@ -9,8 +9,9 @@ describe_actions = ['look', 'view', 'describe']
 take_actions = ['take', 'get', 'grab', 'retrieve', 'nab']
 drop_actions = ['drop', 'yeet', 'toss']
 place_actions = ['place', 'put', 'set', 'mount']
-wear_actions = ['wear', 'don']
-unwear_actions = ['remove', 'strip']
+wear_actions = ['equip', 'eq', 'wear', 'don', 'wield', 'arm']
+unwear_actions = ['unequip', 'uq', 'remove', 'strip', 'unarm']
+
 
 def validate_action(action, obj, ind_obj, prep):
     # Travel Action (Moving between roomspaces): 
@@ -22,14 +23,13 @@ def validate_action(action, obj, ind_obj, prep):
     # Drop Action (Removing an item from pc's inventory):
     elif action in drop_actions: pc.drop_item(obj)
     # Place Action (Placing an own item into another inventory):
-    elif action in place_actions: pc.place_item(obj, ind_obj)
-    # Open and Close Actions:
+    elif action in place_actions: pc.place_item(obj, ind_obj, prep)
+    # Open and Close Actions (Container State Interaction):
     elif action == 'open': pc.open_box(obj)
     elif action == 'close': pc.close_box(obj)
-    # Wear Actions:
-    elif action in wear_actions: pc.wear_item(obj)
-    # Unwear Actions (What's a good word?):
-    elif action in unwear_actions: pc.unwear_item(obj)
+    # Equip and Unequip Actions (Holding Items):
+    elif action in wear_actions: pc.equip_item(obj, action)
+    elif action in unwear_actions: pc.unequip_item(obj)
     # Exit to Menu: 
     elif action == "exit": return False
     # Default: 
