@@ -11,7 +11,7 @@ class Room(Location, Container):
     def __init__(self, name):
         Location.__init__(self, name)
         self.desc = []
-        self.list_desc = "lying on the ground" # Basic list_desc for all rooms
+        self.list_desc = "around the room" # Basic list_desc for all rooms
         self.entityType = "room"  # A roomspace will have type room.
         self.inventory = {}  # This is the 'root' inventory for the room.
         self.container_inventory = []  # This is the subcontainer inventory.
