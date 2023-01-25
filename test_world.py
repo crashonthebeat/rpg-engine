@@ -1,6 +1,6 @@
 from src.player import Player
 from src.rooms import Room
-from src.items import Item
+from src.items import Item, Weapon
 from src.basicTypes import Container
 from src.clothing import *
 from termcolor import colored
@@ -19,19 +19,19 @@ stick = Item(
     ["A basic stick that could be used as a weapon in a pinch."]
     )
 
-longsword = Item(
+longsword = Weapon(
     f"a {intr('longsword')}",
-    ["An adequately crafted longsword."]
+    ["An adequately crafted longsword."], 1
 )
 
-wood_axe = Item(
+wood_axe = Weapon(
     f"a {intr('woodcutters axe')}",
-    ["Your trusty wood cutting axe."]
+    ["Your trusty wood cutting axe."], 1
 )
 
-dagger = Item(
+dagger = Weapon(
     f"a {intr('dagger')}",
-    ["A sharp, easily concealed dagger."]
+    ["A sharp, easily concealed dagger."], 1
 )
 
 leather_torso = Tunic(
@@ -39,43 +39,49 @@ leather_torso = Tunic(
     [
         "A flexible looking leather vest that covers the wearers torso and hips",
         "but not the arms."
-    ],
+    ], 
+    "torso"
 )
 
 cotton_breeches = Trousers(
     f"a pair of {intr('cotton breeches')}",
-    ["A sturdy and comfortable pair of brown breeches."]
+    ["A sturdy and comfortable pair of brown breeches."], "legs"
 )
 
 leather_boots = Boots(
     f"a pair of {intr('leather boots')}",
-    ["A strong and well worn pair of boots."]
+    ["A strong and well worn pair of boots."], "feet"
 )
 
 cork_sandals = Shoes(
     f"A pair of {intr('cork sandals')}",
-    ["You still don't know why you bought these."]
+    ["You still don't know why you bought these."], "feet"
+)
+
+travel_backpack = Backpack(
+    f"a {intr('travel backpack')}",
+    ["A travelling backpack made of thick canvas."], "back"
 )
 
 # CONTAINER INITIALIZATION
 
 start_cabin_rack = Container(
-    "Your weapon rack", "mounted on the weapon rack",
+    "a weapon rack", "mounted on the weapon rack",
     True, False)
 
-start_cabin_rack.inventory = {
-    longsword: 1,
-    wood_axe: 1
-}
-
 start_cabin_chest = Container(
-    "Your bedside chest", "in your bedside chest",
+    "a bedside chest", "in your bedside chest",
     False, True)
 
 start_cabin_chest.inventory = {
     leather_torso: 1,
     cotton_breeches: 1,
     leather_boots: 1
+}
+
+start_cabin_rack.inventory = {
+    longsword: 1,
+    wood_axe: 1,
 }
 
 # ROOM INITIALIZATION
@@ -94,7 +100,10 @@ forest_path_2 = Room("A path through the forest")
 forest_path_3 = Room("A path through the forest")
 
 start_cabin.inventory = {
-    cork_sandals: 1
+    cork_sandals: 1,
+    travel_backpack: 1,
+    start_cabin_rack: 1,
+    start_cabin_chest: 1
 }
 
 start_cabin.container_inventory = [
