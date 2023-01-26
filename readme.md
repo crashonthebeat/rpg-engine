@@ -1,5 +1,7 @@
 # RPG-ENGINE alpha 0.3
 
+This is an old version of the code that I have started rewriting as of 1/25/2023. The way I wrote items and containers proved to be way too much work and I belive that if I rewrite the item code, I can make things much more smoother down the road. I've also decided to add more travel methods and look methods before I start on items, and flesh out all kinds of "foot and eyeball" interactions before I move on to "hand stuff".
+
 This is a text-adventure rpg engine written from scratch entirely in python. I don't know what level of python I am but it's surely not expert, so I am open to advice or comments. Additionally, I'm still new to git so everything is going to be a little weird until I learn the best practices.
 
 I'm not a coder by trade, just by hobby (and will be for the foreseeable future) so I can't guarantee this will be completely bug-free. Just using this to keep the existential dread from setting in.
